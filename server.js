@@ -92,10 +92,10 @@ app.get('/updategame/:id', async (req, res) => {
 
 
 app.get('/updategame/:id/submit', async (req, res) => {
-    const { id } = req.params;
-    const { gamename, gamepic } = req.query;
+    const oldId = req.params.id;           // current id in URL
+    const { id: newId, gamename, gamepic } = req.query; // new id from form
 
-    if (!gamename || !gamepic) {
+    if (!newId || !gamename || !gamepic) {
         return res.status(400).send('All fields are required');
     }
 
@@ -103,8 +103,8 @@ app.get('/updategame/:id/submit', async (req, res) => {
         const connection = await mysql.createConnection(dbConfig);
 
         const [result] = await connection.execute(
-            'UPDATE games SET gamename = ?, gamepic = ? WHERE id = ?',
-            [gamename, gamepic, id]
+            'UPDATE games SET id = ?, gamename = ?, gamepic = ? WHERE id = ?',
+            [newId, gamename, gamepic, oldId]
         );
 
         await connection.end();
@@ -119,6 +119,7 @@ app.get('/updategame/:id/submit', async (req, res) => {
         res.status(500).send('Error updating game');
     }
 });
+
 
 app.get('/deletegame/:id', async (req, res) => {
     const { id } = req.params;
@@ -171,6 +172,18 @@ app.post('/deletegame', async (req, res) => {
         res.status(500).json({ message: 'Error deleting game' });
     }
 });
+
+app.get('/deletegame', (req, res) => {
+    res.send(`
+    <h1>Delete Game</h1>
+    <form action="/deletegame" method="post">
+      <label>Game ID:</label><br/>
+      <input type="number" name="id" required /><br/><br/>
+      <button type="submit">Delete Game</button>
+    </form>
+  `);
+});
+
 
 
 
