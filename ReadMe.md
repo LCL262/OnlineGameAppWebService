@@ -1,11 +1,11 @@
 Web Service primary URL:
-https://onlinegameappwebservice-ymmd.onrender.com
+https://onlinegameappwebservice-1.onrender.com/allgames
 
 Retrieve all games:
-https://onlinegameappwebservice-ymmd.onrender.com/allgames
+https://onlinegameappwebservice-1.onrender.com/allgamesallgames
 
 Add games:
-https://onlinegameappwebservice-ymmd.onrender.com/addgame
+https://onlinegameappwebservice-1.onrender.com/allgamesaddgame
 
 {
 "gamename": "Wuthering Waves",
@@ -13,10 +13,10 @@ https://onlinegameappwebservice-ymmd.onrender.com/addgame
 }
 
 Delete games using GET:
-https://onlinegameappwebservice-1.onrender.com/deletegame/3
+https://onlinegameappwebservice-1.onrender.com/allgamesdeletegame/3
 
 Delete games using POST:
-https://onlinegameappwebservice-1.onrender.com/deletegame
+https://onlinegameappwebservice-1.onrender.com/allgamesdeletegame
 
 {
 "id": 3
