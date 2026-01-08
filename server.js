@@ -117,27 +117,27 @@ app.get('/updategame/:id/submit', async (req, res) => {
     }
 });
 
-app.get('/deletecard/:id', async (req, res) => {
+app.get('/deletegame/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
         const connection = await mysql.createConnection(dbConfig);
 
         const [result] = await connection.execute(
-            'DELETE FROM cards WHERE id = ?',
+            'DELETE FROM games WHERE id = ?',
             [id]
         );
 
         await connection.end();
 
         if (result.affectedRows === 0) {
-            return res.send('Card not found');
+            return res.send('Game not found');
         }
 
-        res.send('Card deleted successfully!');
+        res.send('Game deleted successfully!');
     } catch (err) {
         console.error(err);
-        res.status(500).send('Error deleting card');
+        res.status(500).send('Error deleting game');
     }
 });
 
