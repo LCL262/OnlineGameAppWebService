@@ -19,6 +19,7 @@ const dbConfig = {
 const app = express();
 //helps app to read json
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 //Start the server
 app.listen(port, () => {console.log('Listening on port: ', port);});
@@ -149,27 +150,25 @@ app.post('/deletegame', async (req, res) => {
     const { id } = req.body;
 
     if (!id) {
-        return res.status(400).json({ message: 'Game ID is required' });
+        return res.status(400).send('Game ID is required');
     }
 
     try {
         const connection = await mysql.createConnection(dbConfig);
-
         const [result] = await connection.execute(
             'DELETE FROM games WHERE id = ?',
             [id]
         );
-
         await connection.end();
 
         if (result.affectedRows === 0) {
-            return res.status(404).json({ message: 'Game not found' });
+            return res.send('Game not found');
         }
 
-        res.json({ message: 'Game deleted successfully!' });
+        res.send('Game deleted successfully!');
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'Error deleting game' });
+        res.status(500).send('Error deleting game');
     }
 });
 
