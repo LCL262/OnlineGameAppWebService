@@ -21,3 +21,6 @@ https://onlinegameappwebservice-1.onrender.com/deletegame
 {
 "id": 3
 }
+
+If add /deletegame/:id at the end, it uses GET.
+If add only /deletegame, user will be redirected to the delete page and can type the id and click delete button. This is using POST
