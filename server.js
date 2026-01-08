@@ -76,6 +76,9 @@ app.get('/updategame/:id', async (req, res) => {
     res.send(`
         <h1>Update Game</h1>
         <form action="/updategame/${id}/submit" method="get">
+            <label>Game ID:</label><br/>
+            <input type="text" name="id" required /><br/><br/>
+        
             <label>Game Name:</label><br/>
             <input type="text" name="gamename" required /><br/><br/>
 
@@ -140,5 +143,34 @@ app.get('/deletegame/:id', async (req, res) => {
         res.status(500).send('Error deleting game');
     }
 });
+
+app.post('/deletegame', async (req, res) => {
+    const { id } = req.body;
+
+    if (!id) {
+        return res.status(400).json({ message: 'Game ID is required' });
+    }
+
+    try {
+        const connection = await mysql.createConnection(dbConfig);
+
+        const [result] = await connection.execute(
+            'DELETE FROM games WHERE id = ?',
+            [id]
+        );
+
+        await connection.end();
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Game not found' });
+        }
+
+        res.json({ message: 'Game deleted successfully!' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error deleting game' });
+    }
+});
+
 
 

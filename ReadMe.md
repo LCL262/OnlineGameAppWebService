@@ -3,7 +3,6 @@ https://onlinegameappwebservice-ymmd.onrender.com
 
 Retrieve all games:
 https://onlinegameappwebservice-ymmd.onrender.com/allgames
-![img.png](img.png)
 
 Add games:
 https://onlinegameappwebservice-ymmd.onrender.com/addgame
@@ -13,3 +12,12 @@ https://onlinegameappwebservice-ymmd.onrender.com/addgame
 "gamepic": "https://static0.gamerantimages.com/wordpress/wp-content/uploads/wm/2025/01/wuthering-waves-2-0-visual.jpg"
 }
 
+Delete games using GET:
+https://onlinegameappwebservice-1.onrender.com/deletegame/3
+
+Delete games using POST:
+https://onlinegameappwebservice-1.onrender.com/deletegame
+
+{
+"id": 3
+}
