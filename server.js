@@ -36,93 +36,59 @@ app.get('/allgames', async (req, res) => {
     }
 });
 
-app.get('/addgame', (req, res) => {
-    res.send(`
-        <h1>Add Game</h1>
-        <form action="/addgame/submit" method="get">
-            <label>Game Name:</label><br/>
-            <input type="text" name="gamename" required /><br/><br/>
+app.post('/addgame', async (req, res) => {
+    const { gamename, gamepic } = req.body;
 
-            <label>Game Image URL:</label><br/>
-            <input type="text" name="gamepic" required /><br/><br/>
-
-            <button type="submit">Add Game</button>
-        </form>
-    `);
-});
-
-app.get('/addgame/submit', async (req, res) => {
-    const { gamename, gamepic } = req.query;
+    if (!gamename || !gamepic) {
+        return res.status(400).json({ message: 'Missing fields' });
+    }
 
     try {
         const connection = await mysql.createConnection(dbConfig);
-
         await connection.execute(
             'INSERT INTO games (gamename, gamepic) VALUES (?, ?)',
             [gamename, gamepic]
         );
-
         await connection.end();
-
-        res.send('Game added successfully!');
+        res.json({ message: 'Game added' });
     } catch (err) {
-        console.error(err);
-        res.status(500).send('Error adding game');
+        res.status(500).json({ message: 'Error adding game' });
     }
 });
 
-app.get('/updategame/:id', async (req, res) => {
+
+app.post('/updategame/:id', async (req, res) => {
     const { id } = req.params;
+    const { gamename, gamepic } = req.body;
 
-    res.send(`
-        <h1>Update Game</h1>
-        <form action="/updategame/${id}/submit" method="get">
-            <label>Game ID:</label><br/>
-            <input type="text" name="id" required /><br/><br/>
-        
-            <label>Game Name:</label><br/>
-            <input type="text" name="gamename" required /><br/><br/>
-
-            <label>Game Image URL:</label><br/>
-            <input type="text" name="gamepic" required /><br/><br/>
-
-            <button type="submit">Update Game</button>
-        </form>
-    `);
-});
-
-
-app.get('/updategame/:id/submit', async (req, res) => {
-    const oldId = req.params.id;           // current id in URL
-    const { id: newId, gamename, gamepic } = req.query; // new id from form
-
-    if (!newId || !gamename || !gamepic) {
-        return res.status(400).send('All fields are required');
+    if (!gamename || !gamepic) {
+        return res.status(400).json({ message: 'Missing fields' });
     }
 
     try {
         const connection = await mysql.createConnection(dbConfig);
 
         const [result] = await connection.execute(
-            'UPDATE games SET id = ?, gamename = ?, gamepic = ? WHERE id = ?',
-            [newId, gamename, gamepic, oldId]
+            'UPDATE games SET gamename = ?, gamepic = ? WHERE id = ?',
+            [gamename, gamepic, id]
         );
 
         await connection.end();
 
         if (result.affectedRows === 0) {
-            return res.send('Game not found');
+            return res.status(404).json({ message: 'Game not found' });
         }
 
-        res.send('Game updated successfully!');
+        res.json({ message: 'Game updated successfully' });
     } catch (err) {
         console.error(err);
-        res.status(500).send('Error updating game');
+        res.status(500).json({ message: 'Error updating game' });
     }
 });
 
 
-app.get('/deletegame/:id', async (req, res) => {
+
+app.post('/deletegame/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -136,52 +102,16 @@ app.get('/deletegame/:id', async (req, res) => {
         await connection.end();
 
         if (result.affectedRows === 0) {
-            return res.send('Game not found');
+            return res.status(404).json({ message: 'Game not found' });
         }
 
-        res.send('Game deleted successfully!');
+        res.json({ message: 'Game deleted successfully' });
     } catch (err) {
         console.error(err);
-        res.status(500).send('Error deleting game');
+        res.status(500).json({ message: 'Error deleting game' });
     }
 });
 
-app.post('/deletegame', async (req, res) => {
-    const { id } = req.body;
-
-    if (!id) {
-        return res.status(400).send('Game ID is required');
-    }
-
-    try {
-        const connection = await mysql.createConnection(dbConfig);
-        const [result] = await connection.execute(
-            'DELETE FROM games WHERE id = ?',
-            [id]
-        );
-        await connection.end();
-
-        if (result.affectedRows === 0) {
-            return res.send('Game not found');
-        }
-
-        res.send('Game deleted successfully!');
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Error deleting game');
-    }
-});
-
-app.get('/deletegame', (req, res) => {
-    res.send(`
-    <h1>Delete Game</h1>
-    <form action="/deletegame" method="post">
-      <label>Game ID:</label><br/>
-      <input type="number" name="id" required /><br/><br/>
-      <button type="submit">Delete Game</button>
-    </form>
-  `);
-});
 
 
 
